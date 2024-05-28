@@ -1,17 +1,14 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Register ScrollTrigger plugin
+ 
     gsap.registerPlugin(ScrollTrigger);
 
-    // Initialize LocomotiveScroll
     const locoScroll = new LocomotiveScroll({
         el: document.querySelector("#main"),
         smooth: true
     });
 
-    // Each time Locomotive Scroll updates, tell ScrollTrigger to update too (sync positioning)
     locoScroll.on("scroll", ScrollTrigger.update);
 
-    // Tell ScrollTrigger to use these proxy methods for the "#main" element since Locomotive Scroll is hijacking things
     ScrollTrigger.scrollerProxy("#main", {
         scrollTop(value) {
             return arguments.length ? locoScroll.scrollTo(value, 0, 0) : locoScroll.scroll.instance.scroll.y;
@@ -22,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function() {
         pinType: document.querySelector("#main").style.transform ? "transform" : "fixed"
     });
 
-    // Cursor effect
     function cursorEffect() {
         var page1Content = document.querySelector("#page1-content");
         var cursor = document.querySelector("#cursor");
@@ -54,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     cursorEffect();
 
-    // Page 2 animation
     function page2Animation() {
         gsap.from(".elem h1", {
             y: 120,
@@ -72,21 +67,43 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     page2Animation();
-
-    // Refresh ScrollTrigger after setup
     ScrollTrigger.addEventListener("refresh", () => locoScroll.update());
     ScrollTrigger.refresh();
 });
+
 var swiper = new Swiper(".mySwiper", {
     slidesPerView: 1,
     spaceBetween: 30,
     loop: true,
-    pagination: {
-      el: ".swiper-pagination",
-      clickable: true,
+    autoplay: {
+        delay: 2000,
+        disableOnInteraction: false,
     },
-    navigation: {
-      nextEl: ".swiper-button-next",
-      prevEl: ".swiper-button-prev",
-    },
-  });
+});
+
+var tl = gsap.timeline();
+tl.from("#loader h3", {
+    x: 40,
+    opacity: 0,
+    duration: 1,
+    stagger: 0.1
+})
+.to("#loader h3", {
+    opacity: 0,
+    x: -40,
+    duration: 1,
+    stagger: 0.1
+})
+.to("#loader", {
+    opacity: 0
+})
+.to("#loader", {
+    display: "none"
+})
+.from("#page1-content h1 span", {
+    y: 100,
+    opacity: 0,
+    stagger: 0.2,
+    duration: 0.5,
+    delay:-0.5
+});
